@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ShipLog — Content Ideas</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      color: #1a1a1a;
+      background: #f8f9fa;
+    }
+    h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+    .subtitle { color: #666; font-size: 0.9rem; margin-bottom: 1.5rem; }
+    label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+    textarea {
+      width: 100%;
+      min-height: 280px;
+      padding: 0.75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      resize: vertical;
+    }
+    .hint { font-size: 0.85rem; color: #666; margin: 0.5rem 0 1rem; }
+    .actions { margin: 1rem 0; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    button, .btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.95rem;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      background: #fff;
+    }
+    button.primary {
+      background: #2563eb;
+      color: #fff;
+      border-color: #2563eb;
+    }
+    button.primary:hover { background: #1d4ed8; }
+    button.danger { color: #b91c1c; border-color: #fca5a5; }
+    button.danger:hover { background: #fef2f2; }
+    .add-row {
+      display: flex;
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+    }
+    .add-row input {
+      flex: 1;
+      padding: 0.5rem 0.75rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .idea-list {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #ddd;
+    }
+    .idea-list h2 { font-size: 1rem; margin-bottom: 0.75rem; }
+    .idea-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+    .idea-row.checked .idea-text { text-decoration: line-through; color: #888; }
+    .idea-text { flex: 1; }
+    .idea-row form { display: inline; }
+    .empty { color: #888; font-style: italic; }
+  </style>
+</head>
+<body>
+  <h1>Content ideas</h1>
+  <p class="subtitle">ShipLog — track ideas for your personal brand</p>
+
+  <form method="post">
+    <label for="ideas_text">Edit all ideas (one per line)</label>
+    <textarea id="ideas_text" name="ideas_text" placeholder="Add ideas here, one per line…">{{ textarea_text }}</textarea>
+    <p class="hint">Prefix a line with <code>[x] </code> to mark it done, then click Save. Or use the quick actions below.</p>
+    <div class="actions">
+      <button type="submit" name="action" value="save" class="primary">Save changes</button>
+    </div>
+  </form>
+
+  <form method="post" class="add-row">
+    <input type="text" name="new_idea" placeholder="New content idea…" autocomplete="off">
+    <button type="submit" name="action" value="add" class="primary">Add</button>
+  </form>
+
+  <section class="idea-list">
+    <h2>Quick actions</h2>
+    {% if ideas %}
+      {% for idea in ideas %}
+        <div class="idea-row{% if idea.checked %} checked{% endif %}">
+          <span class="idea-text">{{ idea.text }}</span>
+          <form method="post">
+            <input type="hidden" name="idea_id" value="{{ idea.id }}">
+            <button type="submit" name="action" value="toggle">
+              {% if idea.checked %}Uncheck{% else %}Check{% endif %}
+            </button>
+          </form>
+          <form method="post">
+            <input type="hidden" name="idea_id" value="{{ idea.id }}">
+            <button type="submit" name="action" value="remove" class="danger">Remove</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="empty">No content ideas yet. Add one above or type in the textarea and save.</p>
+    {% endif %}
+  </section>
+</body>
+</html>
