@@ -1,9 +1,8 @@
-
 # python
 __pycache__/
 *.py[cod]
 .venv/
 venv/
 
-# local data
+# local data (for your ideas)
 data/ideas.json

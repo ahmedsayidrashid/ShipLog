@@ -8,11 +8,13 @@ app = Flask(__name__)
 
 DATA_DIR = Path(__file__).parent / "data"
 IDEAS_FILE = DATA_DIR / "ideas.json"
+# save ideas to a local JSON file
 
 CHECKED_PREFIX = "[x] "
 
 
 def load_ideas():
+    """Load ideas from the JSON file."""
     if not IDEAS_FILE.exists():
         return []
     with IDEAS_FILE.open(encoding="utf-8") as f:
@@ -20,16 +22,19 @@ def load_ideas():
 
 
 def save_ideas(ideas):
+    """Save ideas to the JSON file."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     with IDEAS_FILE.open("w", encoding="utf-8") as f:
         json.dump(ideas, f, indent=2)
 
 
 def new_idea(text):
+    """Create a new idea."""
     return {"id": uuid.uuid4().hex[:8], "text": text.strip(), "checked": False}
 
 
 def format_for_textarea(ideas):
+    """Format ideas for the textarea."""
     lines = []
     for idea in ideas:
         line = idea["text"]
@@ -40,6 +45,7 @@ def format_for_textarea(ideas):
 
 
 def parse_line(line):
+    """Parse a line of text into an idea."""
     line = line.strip()
     if not line:
         return None
@@ -53,6 +59,7 @@ def parse_line(line):
 
 
 def parse_textarea(text, existing):
+    """Parse the textarea into ideas."""
     parsed = []
     for line in text.splitlines():
         item = parse_line(line)
@@ -73,6 +80,7 @@ def parse_textarea(text, existing):
 
 
 def toggle_checked(ideas, idea_id):
+    """Toggle the checked status of an idea."""
     for idea in ideas:
         if idea["id"] == idea_id:
             idea["checked"] = not idea.get("checked", False)
@@ -82,6 +90,7 @@ def toggle_checked(ideas, idea_id):
 
 @app.route("/", methods=["GET", "POST"])
 def index():
+    """The main route for the app."""
     if request.method == "POST":
         action = request.form.get("action")
         ideas = load_ideas()
